@@ -67,3 +67,9 @@ If you make any changes to the Function App code within the Assets folder, ensur
 # Intune Remediation Script
 
 The Intune Remediation Script used to create the Log Analytics custom logs and data sources can be found in the Remediation folder. You will need to add your DCR Immutable ID and the Function App URL to the script before deploying it via Intune.
+
+### Credits
+
+Thank you to Maurice Daly for collaborating on this session and thank you to the MSEndpointMgr Team for their initial blog post on AppLocker and Log Analytics, which inspired this solution for the new method for Log Analytics ingestion using Data Collection Rules.
+
+[Log Analytics & AppLocker – Better Together](https://msendpointmgr.com/2021/08/13/log-analytics-applocker-better-together/)

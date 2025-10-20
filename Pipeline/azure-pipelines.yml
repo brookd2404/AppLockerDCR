@@ -1,0 +1,114 @@
+trigger: none
+parameters:
+  - name: resourceGroupName
+    type: string
+  - name: location
+    type: string
+    default: "UK South"
+  - name: serviceConnectionName
+    type: string
+  - name: subscriptionId
+    type: string
+  - name: bicepFilePath
+    type: string
+    default: "main.bicep"
+  - name: environmentName
+    type: string
+  - name: resourceName
+    type: string
+
+variables:
+  zipPath: "$(Pipeline.Workspace)/drop/package.zip"
+  stroageAccountName: "${{ parameters.resourceName }}st"
+
+stages:
+  - stage: Build
+    displayName: Build & Package
+    jobs:
+      - job: ArchiveAndPublish
+        displayName: Archive FunctionApp & Publish Artifact
+        pool:
+          vmImage: "windows-latest"
+        steps:
+          - task: ArchiveFiles@2
+            displayName: "Archive FunctionApp"
+            inputs:
+              rootFolderOrFile: "Assets/FunctionApp"
+              includeRootFolder: false
+              archiveType: "zip"
+              archiveFile: "$(Build.ArtifactStagingDirectory)/package.zip"
+              replaceExistingArchive: true
+
+          - task: PublishBuildArtifacts@1
+            displayName: "Publish build artifact"
+            inputs:
+              PathtoPublish: "$(Build.ArtifactStagingDirectory)/package.zip"
+              ArtifactName: "drop"
+              publishLocation: "Container"
+
+  - stage: Deploy
+    displayName: Deploy Infrastructure
+    dependsOn: Build
+    jobs:
+      - deployment: DeployFunctionApp
+        displayName: Deploy Function App
+        environment: "${{ parameters.environmentName }}"
+        pool:
+          vmImage: "windows-latest"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+
+                - task: AzureResourceManagerTemplateDeployment@3
+                  displayName: "Deploy ARM/Bicep"
+                  inputs:
+                    deploymentScope: "Resource Group"
+                    azureResourceManagerConnection: "${{ parameters.serviceConnectionName }}"
+                    subscriptionId: "${{ parameters.subscriptionId }}"
+                    action: "Create Or Update Resource Group"
+                    resourceGroupName: "${{ parameters.resourceGroupName }}"
+                    location: "${{ parameters.location }}"
+                    templateLocation: "Linked artifact"
+                    csmFile: "${{ parameters.bicepFilePath }}"
+                    deploymentMode: "Incremental"
+
+  - stage: Upload
+    displayName: Upload Artifacts to Blob
+    dependsOn: Deploy
+    jobs:
+      - deployment: UploadZip
+        displayName: Upload ZIP via Azure CLI
+        environment: "${{ parameters.environmentName }}"
+        pool:
+          vmImage: "windows-latest"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: drop
+
+                - task: AzureCLI@2
+                  displayName: "Upload ZIP via Azure CLI (federated auth)"
+                  inputs:
+                    azureSubscription: "${{ parameters.serviceConnectionName }}"
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      ZIP_PATH="$(Pipeline.Workspace)/drop/package.zip"
+                      echo "Uploading ZIP from: $ZIP_PATH"
+
+                      if [ ! -f "$ZIP_PATH" ]; then
+                        echo "ERROR: ZIP not found at $ZIP_PATH"
+                        exit 1
+                      fi
+
+                      az storage blob upload \
+                        --account-name ${{ variables.storageAccountName }} \
+                        --container-name packages \
+                        --name package.zip \
+                        --file "$ZIP_PATH" \
+                        --auth-mode login \
+                        --overwrite

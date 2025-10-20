@@ -1,0 +1,291 @@
+{
+    "version": "Notebook/1.0",
+    "items": [
+        {
+            "type": 18,
+            "content": {
+                "version": "ImageItem/1.0",
+                "imageUrl": "https://cdn.sched.co/mms2025music/img/logo.jpg",
+                "size": 2,
+                "title": "",
+                "altText": ""
+            },
+            "name": "image - 2"
+        },
+        {
+            "type": 1,
+            "content": {
+                "json": "# MMS Music Edition 2025 - Nashvegas!\n---\n\nA simple LA Workbook to visialise our Demo Data for AppLocker.\n"
+            },
+            "name": "text - 2"
+        },
+        {
+            "type": 12,
+            "content": {
+                "version": "NotebookGroup/1.0",
+                "groupType": "editable",
+                "title": "File Detection Information",
+                "items": [
+                    {
+                        "type": 9,
+                        "content": {
+                            "version": "KqlParameterItem/1.0",
+                            "parameters": [
+                                {
+                                    "id": "f02b44ac-a20e-4a5d-9c16-689dbffad9c1",
+                                    "version": "KqlParameterItem/1.0",
+                                    "name": "TimePeriod",
+                                    "label": "Time Period",
+                                    "type": 4,
+                                    "typeSettings": {
+                                        "selectableValues": [
+                                            {
+                                                "durationMs": 3600000
+                                            },
+                                            {
+                                                "durationMs": 14400000
+                                            },
+                                            {
+                                                "durationMs": 43200000
+                                            },
+                                            {
+                                                "durationMs": 86400000
+                                            },
+                                            {
+                                                "durationMs": 172800000
+                                            },
+                                            {
+                                                "durationMs": 259200000
+                                            },
+                                            {
+                                                "durationMs": 604800000
+                                            },
+                                            {
+                                                "durationMs": 1209600000
+                                            },
+                                            {
+                                                "durationMs": 2419200000
+                                            },
+                                            {
+                                                "durationMs": 2592000000
+                                            },
+                                            {
+                                                "durationMs": 5184000000
+                                            },
+                                            {
+                                                "durationMs": 7776000000
+                                            }
+                                        ]
+                                    },
+                                    "timeContext": {
+                                        "durationMs": 86400000
+                                    },
+                                    "value": {
+                                        "durationMs": 2592000000
+                                    }
+                                }
+                            ],
+                            "style": "pills",
+                            "queryType": 0,
+                            "resourceType": "microsoft.operationalinsights/workspaces"
+                        },
+                        "name": "daterange"
+                    },
+                    {
+                        "type": 12,
+                        "content": {
+                            "version": "NotebookGroup/1.0",
+                            "groupType": "editable",
+                            "items": [
+                                {
+                                    "type": 12,
+                                    "content": {
+                                        "version": "NotebookGroup/1.0",
+                                        "groupType": "editable",
+                                        "items": [
+                                            {
+                                                "type": 3,
+                                                "content": {
+                                                    "version": "KqlItem/1.0",
+                                                    "query": "dcrMMSMusic_AppLocker_CL \r\n| where TimeGenerated {TimePeriod:query}\r\n| summarize InstanceCount = count() by FileDescription, FileVersion \r\n| render piechart ",
+                                                    "size": 3,
+                                                    "title": "Count of Intances per FIle and Version",
+                                                    "queryType": 0,
+                                                    "resourceType": "microsoft.operationalinsights/workspaces"
+                                                },
+                                                "customWidth": "33",
+                                                "name": "barchart_InstanceCount"
+                                            },
+                                            {
+                                                "type": 3,
+                                                "content": {
+                                                    "version": "KqlItem/1.0",
+                                                    "query": "dcrMMSMusic_AppLocker_CL \r\n| where TimeGenerated {TimePeriod:query}\r\n| summarize InstanceCount = count() by Publisher\r\n| render piechart ",
+                                                    "size": 3,
+                                                    "title": "Count by Publisher",
+                                                    "queryType": 0,
+                                                    "resourceType": "microsoft.operationalinsights/workspaces"
+                                                },
+                                                "customWidth": "33",
+                                                "name": "pieChart_ByPublisher"
+                                            },
+                                            {
+                                                "type": 3,
+                                                "content": {
+                                                    "version": "KqlItem/1.0",
+                                                    "query": "dcrMMSMusic_AppLocker_CL\r\n| summarize Count = count() by  FileDescription, ProductName, FileVersion\r\n| top 5 by Count",
+                                                    "size": 3,
+                                                    "title": "Top 5 Files",
+                                                    "timeContext": {
+                                                        "durationMs": 86400000
+                                                    },
+                                                    "queryType": 0,
+                                                    "resourceType": "microsoft.operationalinsights/workspaces",
+                                                    "visualization": "tiles",
+                                                    "tileSettings": {
+                                                        "titleContent": {
+                                                            "columnMatch": "FileDescription",
+                                                            "formatter": 1
+                                                        },
+                                                        "leftContent": {
+                                                            "columnMatch": "Count",
+                                                            "formatter": 12,
+                                                            "formatOptions": {
+                                                                "palette": "auto"
+                                                            },
+                                                            "numberFormat": {
+                                                                "unit": 17,
+                                                                "options": {
+                                                                    "maximumSignificantDigits": 3,
+                                                                    "maximumFractionDigits": 2
+                                                                }
+                                                            }
+                                                        },
+                                                        "showBorder": false,
+                                                        "sortCriteriaField": "Count",
+                                                        "sortOrderField": 2,
+                                                        "size": "full"
+                                                    }
+                                                },
+                                                "customWidth": "33",
+                                                "name": "tile_Top5"
+                                            }
+                                        ]
+                                    },
+                                    "name": "group_Charts"
+                                },
+                                {
+                                    "type": 11,
+                                    "content": {
+                                        "version": "LinkItem/1.0",
+                                        "style": "tabs",
+                                        "links": [
+                                            {
+                                                "id": "27ec11f8-7a19-4606-be8e-87b2950bfe45",
+                                                "cellValue": "currentFileView",
+                                                "linkTarget": "parameter",
+                                                "linkLabel": "File Information",
+                                                "subTarget": "FileInfo",
+                                                "style": "link",
+                                                "linkIsContextBlade": true
+                                            },
+                                            {
+                                                "id": "6f07c2a4-3849-4215-acb8-47d55f8b46e1",
+                                                "cellValue": "currentFileView",
+                                                "linkTarget": "parameter",
+                                                "linkLabel": "AppLocker Rules",
+                                                "subTarget": "AppLockerInfo",
+                                                "style": "link"
+                                            }
+                                        ]
+                                    },
+                                    "name": "links - 2"
+                                },
+                                {
+                                    "type": 3,
+                                    "content": {
+                                        "version": "KqlItem/1.0",
+                                        "query": "dcrMMSMusic_AppLocker_CL\r\n| extend ParsedJson = parse_json(FileHash)\r\n| summarize bag = make_bag(ParsedJson) by TimeGenerated, FileDescription, ProductName, FileVersion\r\n| extend FilePath = tostring(bag[\"Path\"]),\r\n         FileHash = tostring(bag[\"Hash\"]),\r\n         Algorithm = tostring(bag[\"Algorithm\"])\r\n| distinct  FileDescription, ProductName, FileVersion, FilePath, FileHash, Algorithm\r\n",
+                                        "size": 0,
+                                        "title": "File Information",
+                                        "timeContext": {
+                                            "durationMs": 86400000
+                                        },
+                                        "queryType": 0,
+                                        "resourceType": "microsoft.operationalinsights/workspaces",
+                                        "visualization": "table",
+                                        "tileSettings": {
+                                            "showBorder": false
+                                        },
+                                        "graphSettings": {
+                                            "type": 0
+                                        }
+                                    },
+                                    "conditionalVisibility": {
+                                        "parameterName": "currentFileView",
+                                        "comparison": "isEqualTo",
+                                        "value": "FileInfo"
+                                    },
+                                    "name": "table_FileInformation"
+                                },
+                                {
+                                    "type": 12,
+                                    "content": {
+                                        "version": "NotebookGroup/1.0",
+                                        "groupType": "editable",
+                                        "items": [
+                                            {
+                                                "type": 1,
+                                                "content": {
+                                                    "json": "# File Rule Data Explanation\r\n\r\nThis workbook shows rules that can be created to allow specific files to run on a system.  \r\n\r\nEach file can be allowed in **three different ways**:\r\n\r\n- **Hash Rule** – Allows the file only if its exact digital fingerprint (hash) matches.  \r\n- **Publisher Rule** – Allows all files signed by the same software publisher (e.g., Microsoft, Adobe).  \r\n- **Path Rule** – Allows the file to run from a specific folder location.  \r\n\r\n---\r\n\r\n## What the Columns Mean\r\n- **FilePath** – Where the file was found on the system.  \r\n- **Publisher** – The company or vendor who signed the file.  \r\n- **Binary** – The program name (e.g., `app.exe`).  \r\n- **FileVersion** – The version of the program.  \r\n- **IntanceCount** – How many times this file was seen.  \r\n- **HashRuleXML / PublisherRuleXML / PathRuleXML** – The XML definitions that can be used to create AppLocker or WDAC rules.  \r\n",
+                                                    "style": "info"
+                                                },
+                                                "customWidth": "50",
+                                                "name": "text_AppLockerGen"
+                                            },
+                                            {
+                                                "type": 1,
+                                                "content": {
+                                                    "json": "# How GUIDs Are Generated\r\n\r\nEach rule must have a unique **GUID**. In this query, they are generated differently depending on the rule type:\r\n\r\n- **BinaryGUID (Path Rule)**  \r\n  Created by hashing the combination of the **FilePath + FileVersion**, then formatting the hash into a GUID.  \r\n  → Ensures the rule is unique for each file at a specific path/version.  \r\n\r\n- **PublisherGUID (Publisher Rule)**  \r\n  Created by hashing just the **Publisher name**.  \r\n  → Ensures all rules for the same publisher share the same GUID.  \r\n\r\n- **HashGUID (Hash Rule)**  \r\n  Created by hashing the **FileHash (fingerprint of the file)**.  \r\n  → Ensures every distinct file hash generates a unique rule ID.  \r\n\r\n---\r\n\r\n### How the GUID is Formed\r\n1. A **SHA-256 hash** is taken of the relevant field(s).  \r\n2. Parts of that hash are split into the standard GUID format:  \r\n",
+                                                    "style": "upsell"
+                                                },
+                                                "customWidth": "50",
+                                                "name": "text_AppLockerGUIDInfo"
+                                            },
+                                            {
+                                                "type": 3,
+                                                "content": {
+                                                    "version": "KqlItem/1.0",
+                                                    "query": "let FilePublisherInfo = dcrMMSMusic_AppLocker_CL\r\n| extend ParsedJson = parse_json(FullPublisherName)\r\n| project FileDescription, ProductName, FileVersion,\r\n          Binary = ParsedJson.BinaryName,\r\n          Version = ParsedJson.BinaryVersion,\r\n          Product = ParsedJson.ProductName,\r\n          Publisher = ParsedJson.PublisherName,\r\n          FileHash = tostring(parse_json(FileHash).Hash);\r\nlet FileHashInfo = dcrMMSMusic_AppLocker_CL\r\n| extend ParsedJson = parse_json(FileHash)\r\n| summarize IntanceCount = count(), bag = make_bag(ParsedJson) by FileDescription, ProductName, FileVersion\r\n| extend FilePath = tostring(bag[\"Path\"]),\r\n         FileHash = tostring(bag[\"Hash\"]),\r\n         Algorithm = tostring(bag[\"Algorithm\"])\r\n| distinct FileDescription, ProductName, FileVersion, FilePath, FileHash, Algorithm, IntanceCount;\r\nFilePublisherInfo\r\n| join kind=inner (\r\n    FileHashInfo\r\n) on FileHash\r\n| extend FilePath = replace_regex(tostring(FilePath), @\"(?i)^[a-z]:\\\\users\\\\[^\\\\]+\", @\"%OSDrive%\\\\Users\\\\*\")\r\n| extend BinaryGUID = strcat(\r\n    substring(tostring(hash_sha256( strcat(tostring(FilePath), tostring(FileVersion)))), 0, 8), \"-\",\r\n    substring(tostring(hash_sha256( strcat(tostring(FilePath), tostring(FileVersion)))), 8, 4), \"-\",\r\n    substring(tostring(hash_sha256( strcat(tostring(FilePath), tostring(FileVersion)))), 12, 4), \"-\",\r\n    substring(tostring(hash_sha256( strcat(tostring(FilePath), tostring(FileVersion)))), 16, 4), \"-\",\r\n    substring(tostring(hash_sha256( strcat(tostring(FilePath), tostring(FileVersion)))), 20, 12)\r\n)\r\n| extend PublisherGUID = strcat(\r\n    substring(tostring(hash_sha256(tostring(Publisher))), 0, 8), \"-\",\r\n    substring(tostring(hash_sha256(tostring(Publisher))), 8, 4), \"-\",\r\n    substring(tostring(hash_sha256(tostring(Publisher))), 12, 4), \"-\",\r\n    substring(tostring(hash_sha256(tostring(Publisher))), 16, 4), \"-\",\r\n    substring(tostring(hash_sha256(tostring(Publisher))), 20, 12)\r\n)\r\n| extend HashGUID = strcat(\r\n    substring(tostring(hash_sha256(tostring(FileHash))), 0, 8), \"-\",\r\n    substring(tostring(hash_sha256(tostring(FileHash))), 8, 4), \"-\",\r\n    substring(tostring(hash_sha256(tostring(FileHash))), 12, 4), \"-\",\r\n    substring(tostring(hash_sha256(tostring(FileHash))), 16, 4), \"-\",\r\n    substring(tostring(hash_sha256(tostring(FileHash))), 20, 12)\r\n)\r\n| extend HashRuleXML = strcat(\r\n    '<FileHashRule Id=\"', HashGUID, '000001\" Name=\"', Binary, ' Hash Rule\" Description=\"Allow ', Binary, ' by hash\" UserOrGroupSid=\"S-1-1-0\" Action=\"Allow\">',\r\n    '<Conditions><FileHashCondition>',\r\n    '<FileHash Type=\"', Algorithm, '\" Data=\"0x', toupper(FileHash), '\" SourceFileName=\"', Binary, '\" />',\r\n    '</FileHashCondition></Conditions></FileHashRule>'\r\n)\r\n| extend PublisherRuleXML = strcat(\r\n    '<FilePublisherRule Id=\"', PublisherGUID, '\" Name=\"', Binary, ' Publisher Rule\" Description=\"Allow files signed by ', Publisher, '\" UserOrGroupSid=\"S-1-1-0\" Action=\"Allow\">',\r\n    '<Conditions><FilePublisherCondition PublisherName=\"', Publisher, '\" ProductName=\"*\" BinaryName=\"', Binary, '\">',\r\n    '<BinaryVersionRange LowSection=\"*\" HighSection=\"*\" />',\r\n    '</FilePublisherCondition></Conditions></FilePublisherRule>'\r\n)\r\n| extend PathRuleXML = strcat(\r\n    '<FilePathRule Id=\"', BinaryGUID, '\" Name=\"Allow ', Binary, ' by Path\" Description=\"Allow ', Binary, ' from specific path\" UserOrGroupSid=\"S-1-1-0\" Action=\"Allow\">',\r\n    '<Conditions><FilePathCondition Path=\"', FilePath, '\" /></Conditions></FilePathRule>'\r\n)\r\n| distinct IntanceCount, FilePath, tostring(Publisher), tostring(Binary), FileVersion, HashRuleXML, PublisherRuleXML, PathRuleXML\r\n| order by IntanceCount desc nulls last ",
+                                                    "size": 0,
+                                                    "timeContext": {
+                                                        "durationMs": 86400000
+                                                    },
+                                                    "queryType": 0,
+                                                    "resourceType": "microsoft.operationalinsights/workspaces"
+                                                },
+                                                "name": "table_AppLockerInfo"
+                                            }
+                                        ]
+                                    },
+                                    "conditionalVisibility": {
+                                        "parameterName": "currentFileView",
+                                        "comparison": "isEqualTo",
+                                        "value": "AppLockerInfo"
+                                    },
+                                    "name": "group_AppLockerInfo"
+                                }
+                            ]
+                        },
+                        "name": "group - 0"
+                    }
+                ]
+            },
+            "name": "group_FileDetections"
+        }
+    ],
+    "fallbackResourceIds": [
+        "/subscriptions/74684ef0-0e85-4b26-a674-16d264ace8dc/resourceGroups/mms-music-2025-rg/providers/Microsoft.OperationalInsights/workspaces/dcrmmsmusic-la"
+    ],
+    "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}

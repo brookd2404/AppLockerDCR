@@ -34,7 +34,7 @@ You also need to ensure you have updated the parameter values in the Bicep param
 
 You will need at least Contributor, Storage Blob Data Contributor and User Access Administrator permissions on the Resource Group where you will be deploying the resources.
 
-You can then use the ['Invoke-DeployBicep.ps1'](/Bicep%20Deployment/Invoke-DeployBicep.ps1) script provided in the BicepModules folder. This script will deploy the Bicep file to your Resource Group.
+You can then use the ['Invoke-DeployBicep.ps1'](/BicepDeployment/Invoke-DeployBicep.ps1) script provided in the BicepModules folder. This script will deploy the Bicep file to your Resource Group.
 
 To execute the script, you will need to provide the following parameters:
 

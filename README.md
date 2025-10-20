@@ -63,3 +63,7 @@ For more information on setting up and running Azure DevOps pipelines, you can r
 # Making Changes
 
 If you make any changes to the Function App code within the Assets folder, ensure you redeploy the Bicep file using either the PowerShell script or the DevOps pipeline to update the deployed resources with your changes, as these are idempotent deployments, it will only update the resources that have changed.
+
+# Intune Remediation Script
+
+The Intune Remediation Script used to create the Log Analytics custom logs and data sources can be found in the Remediation folder. You will need to add your DCR Immutable ID and the Function App URL to the script before deploying it via Intune.

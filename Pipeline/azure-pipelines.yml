@@ -98,6 +98,7 @@ stages:
                     scriptLocation: inlineScript
                     inlineScript: |
                       ZIP_PATH="$(Pipeline.Workspace)/drop/package.zip"
+                      ST_ACC="${{ variables.storageAccountName }}"
                       echo "Uploading ZIP from: $ZIP_PATH"
 
                       if [ ! -f "$ZIP_PATH" ]; then
